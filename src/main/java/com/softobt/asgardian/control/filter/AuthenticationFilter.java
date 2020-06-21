@@ -54,6 +54,7 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
         catch(CredentialException e){
             if(!isPathAllowed(request))
                 throw e;
+            request.setAttribute("user", new LoggedInUser("","default"));
         }
         return super.preHandle(request,response,handler);
 
