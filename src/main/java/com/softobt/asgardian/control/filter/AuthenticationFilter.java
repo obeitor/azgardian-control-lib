@@ -11,7 +11,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Logger;
 
 /**
  * @author aobeitor
@@ -23,8 +22,6 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
 
     private String clientKey;
     private String allowedUrls;
-
-    Logger logger = Logger.getLogger("AuthenticationFilter");
 
     private static final String clientKeyHeaderName = "Client-Key";
     private static final String authKeyHeaderName = "Authorization";
@@ -50,10 +47,14 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
         if(Strings.isNullOrEmpty(reqClientKey) || !clientKey.equals(reqClientKey)){
             throw new CredentialException("Client Key not valid");
         }
+        LoggedInUser user = new LoggedInUser("","NA");
         if(!isPathAllowed(request)) {
             Pair<String, String> userDomain = validateAuthToken(reqAuthKey);
-            request.setAttribute("user",new LoggedInUser(userDomain.getValue(),userDomain.getKey()));
+            user.setDomain(userDomain.getKey());
+            user.setUsername(userDomain.getValue());
+            //request.setAttribute("user",new LoggedInUser(userDomain.getValue(),userDomain.getKey()));
         }
+        request.setAttribute("user",user);
         return super.preHandle(request,response,handler);
 
     }

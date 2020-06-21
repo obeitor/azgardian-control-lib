@@ -1,5 +1,6 @@
 package com.softobt.asgardian.control.service;
 
+import com.softobt.asgardian.control.repositories.BaseDomainRepository;
 import com.softobt.core.api.TokenDetail;
 import com.softobt.asgardian.control.config.JWTokenUtil;
 import com.softobt.core.exceptions.models.CredentialException;
@@ -13,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since 5/31/20
  */
 
-public interface UserValidationService {
+public interface UserValidationService<T> {
 
-    AsgardianUser validateUserCredentials(String username, String authenticationDomain, String password)throws CredentialException;
+    T validateUserCredentials(String username, String authenticationDomain, String password)throws CredentialException;
 
     TokenDetail getToken(AsgardianUser user);
 
@@ -25,7 +26,6 @@ public interface UserValidationService {
 
     void setTokenUtil(JWTokenUtil tokenUtil);
 
-    void setUserRepository(AsgardianUserRepository userRepository);
-
     void setPasswordEncoder(PasswordEncoder passwordEncoder);
+
 }
