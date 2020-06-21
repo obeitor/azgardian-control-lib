@@ -47,14 +47,14 @@ public class AuthenticationFilter extends HandlerInterceptorAdapter {
         if(Strings.isNullOrEmpty(reqClientKey) || !clientKey.equals(reqClientKey)){
             throw new CredentialException("Client Key not valid");
         }
-        LoggedInUser user = new LoggedInUser("","NA");
-        if(!isPathAllowed(request)) {
+        try {
             Pair<String, String> userDomain = validateAuthToken(reqAuthKey);
-            user.setDomain(userDomain.getKey());
-            user.setUsername(userDomain.getValue());
-            //request.setAttribute("user",new LoggedInUser(userDomain.getValue(),userDomain.getKey()));
+            request.setAttribute("user",new LoggedInUser(userDomain.getValue(),userDomain.getKey()));
         }
-        request.setAttribute("user",user);
+        catch(CredentialException e){
+            if(!isPathAllowed(request))
+                throw e;
+        }
         return super.preHandle(request,response,handler);
 
     }
